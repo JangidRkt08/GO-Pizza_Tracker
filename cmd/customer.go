@@ -59,6 +59,22 @@ func (h *Handler) HandleNewOrderPost(c *gin.Context) {
 
 	slog.Info("order created successfully","orderId",order.ID, "customerName",order.CustomerName)
 	c.Redirect(http.StatusSeeOther, "/customer/"+order.ID)
+}
 
 
+// handler to track the order
+func (h *Handler) ServeCustomer(c *gin.Context){
+	orderID := c.Param("id")
+	if orderID == ""{
+		c.String(http.StatusBadRequest,"Invalid Order ID")
+	}
+	order ,err := h.orders.GetOrder(orderID)
+	if err != nil{
+		// slog.Error("failed to get order","error",err)
+		c.String(http.StatusInternalServerError,"Order Not Found")
+		return
+	}
+	c.HTML(http.StatusOK,"customer.tmpl",gin.H{
+		"Order":order,
+	})
 }
