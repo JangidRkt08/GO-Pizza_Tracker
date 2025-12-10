@@ -6,6 +6,7 @@ This project allows customers to place pizza orders and track them **live**, whi
 ---
 
 ## Screens
+<img width="1920" height="1080" alt="Screenshot from 2025-12-10 22-10-15" src="https://github.com/user-attachments/assets/93c82713-a271-48ce-8080-26c64de8251d" />
 
 
 ## 🚀 Features
