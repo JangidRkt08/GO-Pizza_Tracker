@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"net/http"
+
 	// "os/user"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jangidRkt08/pizza-tracker-go/internal/models"
 )
 
 
@@ -15,6 +17,8 @@ Error string
 
 type AdminDashboardData struct {
 	Username string
+	Orders   []models.Order
+	Statuses []string
 }
 
 func (h  *Handler) HandleLoginGet(c *gin.Context){
@@ -51,9 +55,37 @@ func (h *Handler) HandleLogout(c *gin.Context){
 }
 
 func (h *Handler) ServeAdminDashboard(c *gin.Context){
+	orders, err:= h.orders.GetAllOrders()
+	if err != nil{
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
 	username := GetSessionString(c,"username")
 
 	c.HTML(http.StatusOK, "admin.tmpl", AdminDashboardData{
+		Orders:   orders,
+		Statuses: models.OrderStatuses,
 		Username: username,
 	})
+}
+
+func (h *Handler) HandleOrderPut(c *gin.Context){
+
+	orderID := c.Param("id")
+	newStatus := c.Param("status")
+
+	if err := h.orders.UpdateOrderStatus(orderID, newStatus); err != nil{
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.Redirect(http.StatusSeeOther,"/admin")
+}
+
+func (h *Handler) HandleOrderDelete(c *gin.Context){
+	orderID := c.Param("id")
+	if err := h.orders.DeleteOrder(orderID); err != nil{
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.Redirect(http.StatusSeeOther,"/admin")
 }

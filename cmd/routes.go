@@ -15,12 +15,14 @@ func setupRoutes(router *gin.Engine, h *Handler, store sessions.Store) {
 	router.POST("/login",h.HandleLoginPost)
 	router.GET("/logout",h.HandleLogout)
 
-	// admin := router.Group("/admin")
-	// admin.Use(h.AuthMiddleware())
-	// {
-	// 	admin.GET("",h.ServeAdminDashboard)
-	// }
-	router.GET("/admin",h.AuthMiddleware(),h.ServeAdminDashboard)
+	// router.GET("/admin",h.AuthMiddleware(),h.ServeAdminDashboard)
+	admin := router.Group("/admin")
+	admin.Use(h.AuthMiddleware())
+	{
+		admin.GET("",h.ServeAdminDashboard)
+		admin.POST("/order/:id/update", h.HandleOrderPut)
+		admin.POST("/order/:id/delete", h.HandleOrderDelete)
+	}
 
 
 
