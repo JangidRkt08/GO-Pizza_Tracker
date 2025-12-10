@@ -30,7 +30,8 @@ func main(){
 		slog.Error("failed to load templates","error",err)
 		os.Exit(1)
 	}
-	setupRoutes(router,h)
+	sessionStore := setUpsessionStore(dbModel.DB, []byte(cfg.SessionSecretKey))
+	setupRoutes(router,h,sessionStore)
 	slog.Info("Server started successfully", "url", "http://localhost:"+cfg.Port)
 	router.Run(":"+cfg.Port)
 }
