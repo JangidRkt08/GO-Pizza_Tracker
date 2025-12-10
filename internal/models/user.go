@@ -34,7 +34,7 @@ func (u *UserModel) AuthenticateUser(username, password string) (*User, error){
 
 func (u * UserModel) GetUserById(id string) (*User, error){
 	var user User
-	if err := u.DB.First(&user, "id = ?)",id). Error ; err != nil{
+	if err := u.DB.First(&user, "id = ?",id). Error ; err != nil{
 		return nil, err
 	}
 	return &user, nil
