@@ -40,6 +40,7 @@ func (h *Handler) HandleNewOrderPost(c *gin.Context) {
 
 	if err := c.ShouldBind(&form); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	orderItems := make([]models.OrderItem, len(form.Sizes))
@@ -64,6 +65,7 @@ func (h *Handler) HandleNewOrderPost(c *gin.Context) {
 	}
 
 	slog.Info("order created successfully","orderId",order.ID, "customerName",order.CustomerName)
+	h.notificationManager.Notify("admin:new_orders", "new_order")
 	c.Redirect(http.StatusSeeOther, "/customer/"+order.ID)
 }
 
@@ -73,6 +75,7 @@ func (h *Handler) ServeCustomer(c *gin.Context){
 	orderID := c.Param("id")
 	if orderID == ""{
 		c.String(http.StatusBadRequest,"Invalid Order ID")
+		return
 	}
 	order ,err := h.orders.GetOrder(orderID)
 	if err != nil{

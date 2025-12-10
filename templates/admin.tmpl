@@ -139,6 +139,8 @@
             newOrdersBadge.textContent = `${newOrdersCount} new order${newOrdersCount === 1 ? '' : 's'}`
             newOrdersBadge.classList.remove("hidden");
             lastFetched.textContent = updateTime();
+
+            location.reload();
         }
         eventSrc.onerror = err => console.error("EventSource fialed:", err)
     })

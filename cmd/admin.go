@@ -72,12 +72,14 @@ func (h *Handler) ServeAdminDashboard(c *gin.Context){
 func (h *Handler) HandleOrderPut(c *gin.Context){
 
 	orderID := c.Param("id")
-	newStatus := c.Param("status")
+	newStatus := c.PostForm("status")
 
 	if err := h.orders.UpdateOrderStatus(orderID, newStatus); err != nil{
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
+	// notify the client(customer page)
+	h.notificationManager.Notify("order:"+orderID, "order_updated")
 	c.Redirect(http.StatusSeeOther,"/admin")
 }
 
@@ -87,5 +89,6 @@ func (h *Handler) HandleOrderDelete(c *gin.Context){
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
+	h.notificationManager.Notify("order:"+orderID, "order_updated")
 	c.Redirect(http.StatusSeeOther,"/admin")
 }

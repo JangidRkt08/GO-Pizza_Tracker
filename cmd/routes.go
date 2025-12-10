@@ -10,10 +10,11 @@ func setupRoutes(router *gin.Engine, h *Handler, store sessions.Store) {
 	router.GET("/",h.ServeNewOrderForm)
 	router.POST("/new-order",h.HandleNewOrderPost)
 	router.GET("/customer/:id",h.ServeCustomer)
+	router.GET("/notifications",h.notificationHandler)
 
 	router.GET("/login",h.HandleLoginGet)
 	router.POST("/login",h.HandleLoginPost)
-	router.GET("/logout",h.HandleLogout)
+	router.POST("/logout",h.HandleLogout)
 
 	// router.GET("/admin",h.AuthMiddleware(),h.ServeAdminDashboard)
 	admin := router.Group("/admin")
@@ -22,6 +23,7 @@ func setupRoutes(router *gin.Engine, h *Handler, store sessions.Store) {
 		admin.GET("",h.ServeAdminDashboard)
 		admin.POST("/order/:id/update", h.HandleOrderPut)
 		admin.POST("/order/:id/delete", h.HandleOrderDelete)
+		admin.GET("/notifications",h.adminNotificationHandler)
 	}
 
 
